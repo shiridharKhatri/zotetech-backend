@@ -3,6 +3,7 @@ import { Plus, Edit2, Trash2, Save, X } from "lucide-react";
 import "../styles/faq.css";
 import Cookies from "js-cookie";
 import axios from "axios";
+import { ThreeDots } from "react-loader-spinner";
 function FAQ() {
   const [faqs, setFaqs] = useState([]);
 
@@ -10,6 +11,7 @@ function FAQ() {
   const [isEditing, setIsEditing] = useState(false);
   const [editingId, setEditingId] = useState(null);
   const [isFaqActive, setIsFaqActive] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
     question: "",
     answer: "",
@@ -18,6 +20,7 @@ function FAQ() {
 
   const handleAdd = async () => {
     try {
+      setIsLoading(true);
       let response = await axios.post(
         `${import.meta.env.VITE_API_URL}/api/faq/add-faq`,
         formData,
@@ -29,9 +32,11 @@ function FAQ() {
       );
       if (response.data.success) {
         window.location.reload();
+        setIsLoading(false);
       }
       console.log(response);
     } catch (error) {
+      setIsLoading(false);
       console.log(error);
     }
     // if (formData.question.trim() && formData.answer.trim()) {
@@ -179,13 +184,30 @@ function FAQ() {
             </div>
 
             <div className="form-actions">
-              <button
-                className="save-button"
-                onClick={isAdding ? handleAdd : handleUpdate}
-              >
-                <Save size={18} />
-                {isAdding ? "Add FAQ" : "Update FAQ"}
-              </button>
+              {!isLoading && (
+                <button
+                  className="save-button"
+                  onClick={isAdding ? handleAdd : handleUpdate}
+                >
+                  <Save size={18} />
+                  {isAdding ? "Add FAQ" : "Update FAQ"}
+                </button>
+              )}
+              {isLoading && (
+                <button
+                  className="save-button"
+                  onClick={isAdding ? handleAdd : handleUpdate}
+                >
+                  <ThreeDots
+                    strokeColor="white"
+                    strokeWidth="5"
+                    animationDuration="0.75"
+                    color="white"
+                    width="50"
+                    visible={true}
+                  />
+                </button>
+              )}
               <button className="cancel-button" onClick={handleCancel}>
                 <X size={18} />
                 Cancel
