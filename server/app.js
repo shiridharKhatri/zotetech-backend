@@ -17,10 +17,8 @@ app.use("/api/contact", require("./routes/contactRoute"));
 app.use("/api/faq", require("./routes/faqRoute"));
 
 app.get("/", async (req, res) => {
-  return res.status(200).json({
-    success: true,
-    message: "API is working",
-  });
+  return res.redirect(302, 'https://zotetech.com');
+
 });
 
 connectToDatabase(DATABASE_URL)
